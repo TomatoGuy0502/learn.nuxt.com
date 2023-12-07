@@ -1,5 +1,6 @@
 export const useUiState = defineStore('ui', () => {
   const isPanelDragging = ref(false)
+  const panelTerminal = ref(30)
 
   const persistState = reactive(getLayoutDefaults())
 
@@ -28,13 +29,14 @@ export const useUiState = defineStore('ui', () => {
   })
 
   function toggleTerminal() {
-    const TERMINAL_HEIGHT = 30
     persistState.showTerminal = !persistState.showTerminal
     if (persistState.showTerminal) {
-      persistState.panelEditor = persistState.panelEditor / 100 * (100 - TERMINAL_HEIGHT)
-      persistState.panelPreview = persistState.panelPreview / 100 * (100 - TERMINAL_HEIGHT)
+      persistState.panelEditor = persistState.panelEditor / 100 * (100 - panelTerminal.value)
+      persistState.panelPreview = persistState.panelPreview / 100 * (100 - panelTerminal.value)
     }
     else {
+      // Save the terminal size before hiding it
+      panelTerminal.value = 100 - persistState.panelEditor - persistState.panelPreview
       const remaining = persistState.panelEditor + persistState.panelPreview
       persistState.panelEditor = persistState.panelEditor / remaining * 100
       persistState.panelPreview = persistState.panelPreview / remaining * 100
